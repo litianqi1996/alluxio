@@ -882,7 +882,46 @@ public final class PropertyKey implements Comparable<PropertyKey> {
       .setDescription("Service region when using Keystone authentication.")
       .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
       .build();
-
+  public static final PropertyKey COS_ACCESS_KEY =
+      new Builder(Name.COS_ACCESS_KEY)
+          .setDescription("The access key of COS bucket.")
+          .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
+          .setScope(Scope.SERVER)
+          .build();
+  public static final PropertyKey COS_APP_ID =
+      new Builder(Name.COS_APP_ID)
+          .setDescription("The app id of COS bucket.")
+          .setScope(Scope.SERVER)
+          .build();
+  public static final PropertyKey COS_CONNECTION_MAX =
+      new Builder(Name.COS_CONNECTION_MAX)
+          .setDefaultValue(1024)
+          .setDescription("The maximum number of COS connections.")
+          .build();
+  public static final PropertyKey COS_CONNECTION_TIMEOUT =
+      new Builder(Name.COS_CONNECTION_TIMEOUT)
+          .setDefaultValue("50sec")
+          .setDescription("The timeout of connecting to COS.")
+          .setScope(Scope.SERVER)
+          .build();
+  public static final PropertyKey COS_SOCKET_TIMEOUT =
+      new Builder(Name.COS_SOCKET_TIMEOUT)
+          .setDefaultValue("50sec")
+          .setDescription("The timeout of COS socket.")
+          .setScope(Scope.SERVER)
+          .build();
+  public static final PropertyKey COS_REGION =
+      new Builder(Name.COS_REGION)
+          .setDescription("The region name of COS bucket.")
+          .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
+          .setScope(Scope.SERVER)
+          .build();
+  public static final PropertyKey COS_SECRET_KEY =
+      new Builder(Name.COS_SECRET_KEY)
+          .setDescription("The secret key of COS bucket.")
+          .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
+          .setScope(Scope.SERVER)
+          .build();
   // Journal ufs related properties
   public static final PropertyKey MASTER_JOURNAL_UFS_OPTION =
       new Builder(Template.MASTER_JOURNAL_UFS_OPTION)
@@ -1156,41 +1195,6 @@ public final class PropertyKey implements Comparable<PropertyKey> {
       new Builder(Name.MASTER_KEYTAB_KEY_FILE)
           .setDescription("Kerberos keytab file for Alluxio master.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
-          .setScope(Scope.MASTER)
-          .build();
-  public static final PropertyKey MASTER_LINEAGE_CHECKPOINT_CLASS =
-      new Builder(Name.MASTER_LINEAGE_CHECKPOINT_CLASS)
-          .setDefaultValue("alluxio.master.lineage.checkpoint.CheckpointLatestPlanner")
-          .setDescription("The class name of the checkpoint strategy for lineage output "
-              + "files. The default strategy is to checkpoint the latest completed lineage, "
-              + "i.e. the lineage whose output files are completed.")
-          .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
-          .setScope(Scope.MASTER)
-          .build();
-  public static final PropertyKey MASTER_LINEAGE_CHECKPOINT_INTERVAL_MS =
-      new Builder(Name.MASTER_LINEAGE_CHECKPOINT_INTERVAL_MS)
-          .setAlias(new String[]{"alluxio.master.lineage.checkpoint.interval.ms"})
-          .setDefaultValue("5min")
-          .setDescription("The interval between Alluxio's checkpoint scheduling.")
-          .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
-          .setScope(Scope.MASTER)
-          .build();
-  public static final PropertyKey MASTER_LINEAGE_RECOMPUTE_INTERVAL_MS =
-      new Builder(Name.MASTER_LINEAGE_RECOMPUTE_INTERVAL_MS)
-          .setAlias(new String[]{"alluxio.master.lineage.recompute.interval.ms"})
-          .setDefaultValue("5min")
-          .setDescription("The interval between Alluxio's recompute "
-              + "execution. The executor scans the all the lost files tracked by lineage, and "
-              + "re-executes the corresponding jobs.")
-          .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
-          .setScope(Scope.MASTER)
-          .build();
-  public static final PropertyKey MASTER_LINEAGE_RECOMPUTE_LOG_PATH =
-      new Builder(Name.MASTER_LINEAGE_RECOMPUTE_LOG_PATH)
-          .setDefaultValue(String.format("${%s}/recompute.log", Name.LOGS_DIR))
-          .setDescription("The path to the log that the recompute executor redirects the "
-              + "job's stdout into.")
-          .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
           .setScope(Scope.MASTER)
           .build();
   public static final PropertyKey MASTER_LOG_CONFIG_REPORT_HEARTBEAT_INTERVAL =
@@ -2506,21 +2510,6 @@ public final class PropertyKey implements Comparable<PropertyKey> {
       .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
       .setScope(Scope.CLIENT)
       .build();
-  public static final PropertyKey USER_LINEAGE_ENABLED =
-      new Builder(Name.USER_LINEAGE_ENABLED)
-          .setDefaultValue(false)
-          .setDescription("Flag to enable lineage feature.")
-          .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
-          .setScope(Scope.CLIENT)
-          .build();
-  public static final PropertyKey USER_LINEAGE_MASTER_CLIENT_THREADS =
-      new Builder(Name.USER_LINEAGE_MASTER_CLIENT_THREADS)
-          .setDefaultValue(10)
-          .setDescription("The number of threads used by a lineage master client to talk to "
-              + "the lineage master.")
-          .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
-          .setScope(Scope.CLIENT)
-          .build();
   public static final PropertyKey USER_LOCAL_READER_PACKET_SIZE_BYTES =
       new Builder(Name.USER_LOCAL_READER_PACKET_SIZE_BYTES)
           .setDefaultValue("8MB")
@@ -3193,6 +3182,13 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     //
     // UFS access control related properties
     //
+    public static final String COS_ACCESS_KEY = "fs.cos.access.key";
+    public static final String COS_APP_ID = "fs.cos.app.id";
+    public static final String COS_CONNECTION_MAX = "fs.cos.connection.max";
+    public static final String COS_CONNECTION_TIMEOUT = "fs.cos.connection.timeout";
+    public static final String COS_REGION = "fs.cos.region";
+    public static final String COS_SECRET_KEY = "fs.cos.secret.key";
+    public static final String COS_SOCKET_TIMEOUT = "fs.cos.socket.timeout";
     public static final String GCS_ACCESS_KEY = "fs.gcs.accessKeyId";
     public static final String GCS_SECRET_KEY = "fs.gcs.secretAccessKey";
     public static final String OSS_ACCESS_KEY = "fs.oss.accessKeyId";
@@ -3204,11 +3200,11 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String SWIFT_AUTH_METHOD_KEY = "fs.swift.auth.method";
     public static final String SWIFT_AUTH_URL_KEY = "fs.swift.auth.url";
     public static final String SWIFT_PASSWORD_KEY = "fs.swift.password";
+    public static final String SWIFT_REGION_KEY = "fs.swift.region";
     public static final String SWIFT_SIMULATION = "fs.swift.simulation";
     public static final String SWIFT_TENANT_KEY = "fs.swift.tenant";
-    public static final String SWIFT_USER_KEY = "fs.swift.user";
     public static final String SWIFT_USE_PUBLIC_URI_KEY = "fs.swift.use.public.url";
-    public static final String SWIFT_REGION_KEY = "fs.swift.region";
+    public static final String SWIFT_USER_KEY = "fs.swift.user";
 
     //
     // Master related properties
@@ -3255,14 +3251,6 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String MASTER_JOURNAL_TAILER_SLEEP_TIME_MS =
         "alluxio.master.journal.tailer.sleep.time";
     public static final String MASTER_KEYTAB_KEY_FILE = "alluxio.master.keytab.file";
-    public static final String MASTER_LINEAGE_CHECKPOINT_CLASS =
-        "alluxio.master.lineage.checkpoint.class";
-    public static final String MASTER_LINEAGE_CHECKPOINT_INTERVAL_MS =
-        "alluxio.master.lineage.checkpoint.interval";
-    public static final String MASTER_LINEAGE_RECOMPUTE_INTERVAL_MS =
-        "alluxio.master.lineage.recompute.interval";
-    public static final String MASTER_LINEAGE_RECOMPUTE_LOG_PATH =
-        "alluxio.master.lineage.recompute.log.path";
     public static final String MASTER_LOG_CONFIG_REPORT_HEARTBEAT_INTERVAL =
         "alluxio.master.log.config.report.heartbeat.interval";
     public static final String MASTER_PERIODIC_BLOCK_INTEGRITY_CHECK_REPAIR =
@@ -3514,9 +3502,6 @@ public final class PropertyKey implements Comparable<PropertyKey> {
         "alluxio.user.file.write.tier.default";
     public static final String USER_HEARTBEAT_INTERVAL_MS = "alluxio.user.heartbeat.interval";
     public static final String USER_HOSTNAME = "alluxio.user.hostname";
-    public static final String USER_LINEAGE_ENABLED = "alluxio.user.lineage.enabled";
-    public static final String USER_LINEAGE_MASTER_CLIENT_THREADS =
-        "alluxio.user.lineage.master.client.threads";
     public static final String USER_LOCAL_READER_PACKET_SIZE_BYTES =
         "alluxio.user.local.reader.packet.size.bytes";
     public static final String USER_LOCAL_WRITER_PACKET_SIZE_BYTES =
@@ -3689,12 +3674,16 @@ public final class PropertyKey implements Comparable<PropertyKey> {
 
       private static BiFunction<String, PropertyKey, PropertyKey> createNestedPropertyCreator(
           Scope scope, ConsistencyCheckLevel consistencyCheckLevel) {
-        return (name, baseProperty) -> new Builder(name)
-            .setDisplayType(baseProperty.getDisplayType())
-            .setDefaultSupplier(baseProperty.getDefaultSupplier())
-            .setScope(scope)
-            .setConsistencyCheckLevel(consistencyCheckLevel)
-            .buildUnregistered();
+        return (name, baseProperty) -> {
+          Builder builder = new Builder(name)
+              .setScope(scope)
+              .setConsistencyCheckLevel(consistencyCheckLevel);
+          if (baseProperty != null) {
+            builder.setDisplayType(baseProperty.getDisplayType());
+            builder.setDefaultSupplier(baseProperty.getDefaultSupplier());
+          }
+          return builder.buildUnregistered();
+        };
       }
     }
 
