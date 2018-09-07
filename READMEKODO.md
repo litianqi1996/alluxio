@@ -1,4 +1,4 @@
-i##### Qiniu_Alluxio
+##### Qiniu_Alluxio
 ###### confpath:alluxio/conf/alluxio-site.properties
  
 alluxio.master.hostname=localhost
@@ -8,4 +8,5 @@ fs.oss.accessKeyId=`QiniuAk`
 fs.oss.accessKeySecret=`QiniuSk`
 
 `//QINIU_SOURCEHOST`
+
 fs.oss.endpoint=onavshcir.com0.z0.glb.clouddn.com
