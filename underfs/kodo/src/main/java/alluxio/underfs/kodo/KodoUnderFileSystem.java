@@ -33,7 +33,6 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
 
   private final String mBucketName;
 
-
   protected KodoUnderFileSystem(AlluxioURI uri, KodoClient kodoclient, String bucketname,
       UnderFileSystemConfiguration conf) {
     super(uri, conf);
@@ -162,6 +161,9 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
      */
     @Override
     public String[] getCommonPrefixes() {
+      if (mResult.commonPrefixes == null) {
+        return new String[]{mprefix};
+      }
       return mResult.commonPrefixes;
     }
 
@@ -182,6 +184,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
       return null;
     }
   }
+
 
   /**
    * Get metadata information about object. Implementations should process the key as is, which may
