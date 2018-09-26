@@ -43,16 +43,16 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   public static KodoUnderFileSystem creatInstance(AlluxioURI uri,
       UnderFileSystemConfiguration conf) {
     String bucketName = UnderFileSystemUtils.getBucketName(uri);
-    Preconditions.checkArgument(conf.isSet(PropertyKey.OSS_ACCESS_KEY),
-        "Property %s is required to connect to Koko", PropertyKey.OSS_ACCESS_KEY);
-    Preconditions.checkArgument(conf.isSet(PropertyKey.OSS_SECRET_KEY),
-        "Property %s is required to connect to kodo", PropertyKey.OSS_SECRET_KEY);
-    Preconditions.checkArgument(conf.isSet(PropertyKey.OSS_ENDPOINT_KEY),
-        "Property %s is required to connect to kodo", PropertyKey.OSS_ENDPOINT_KEY);
-    String accessId = conf.get(PropertyKey.OSS_ACCESS_KEY);
-    String accessKey = conf.get(PropertyKey.OSS_SECRET_KEY);
-    String endPoint = conf.get(PropertyKey.OSS_ENDPOINT_KEY);
-    Auth auth = Auth.create(accessId, accessKey);
+    Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_ACCESS_KEY),
+        "Property %s is required to connect to Koko", PropertyKey.KODO_ACCESS_KEY);
+    Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_SECRET_KEY),
+        "Property %s is required to connect to kodo", PropertyKey.KODO_SECRET_KEY);
+    Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_SOURCE_HOST),
+        "Property %s is required to connect to kodo", PropertyKey.KODO_SOURCE_HOST);
+    String AccessKey = conf.get(PropertyKey.KODO_ACCESS_KEY);
+    String SecretKey = conf.get(PropertyKey.KODO_SECRET_KEY);
+    String endPoint = conf.get(PropertyKey.KODO_SOURCE_HOST);
+    Auth auth = Auth.create(AccessKey, SecretKey);
     Configuration configuration = new Configuration();
     KodoClient kodoClient = new KodoClient(auth, endPoint, configuration);
     return new KodoUnderFileSystem(uri, kodoClient, bucketName, conf);

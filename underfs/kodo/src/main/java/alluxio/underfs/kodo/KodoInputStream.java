@@ -14,12 +14,12 @@ public class KodoInputStream extends MultiRangeObjectInputStream {
   private final String mBucketName;
 
   /**
-   * Key of the file in OSS to read.
+   * Key of the file in Kodo to read.
    */
   private final String mKey;
 
   /**
-   * The OSS client for OSS operations.
+   * The KODO client for KODO operations.
    */
   private final KodoClient mKodoclent;
 

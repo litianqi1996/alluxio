@@ -80,7 +80,7 @@ public class KodoOutputStream extends OutputStream {
 
   /**
    * Closes this output stream. When an output stream is closed, the local temporary file is
-   * uploaded to OSS Service. Once the file is uploaded, the temporary file is deleted.
+   * uploaded to KODO Service. Once the file is uploaded, the temporary file is deleted.
    */
 
   @Override

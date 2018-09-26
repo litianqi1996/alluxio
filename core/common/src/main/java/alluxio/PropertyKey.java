@@ -15,7 +15,6 @@ import alluxio.exception.ExceptionMessage;
 import alluxio.util.OSUtils;
 import alluxio.util.io.PathUtils;
 import alluxio.wire.Scope;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -23,7 +22,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.sun.management.OperatingSystemMXBean;
 import com.sun.management.UnixOperatingSystemMXBean;
-
 import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
@@ -35,7 +33,6 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -928,6 +925,27 @@ public final class PropertyKey implements Comparable<PropertyKey> {
           .setDescription("The configuration to use for the journal operations.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
           .setScope(Scope.MASTER)
+          .build();
+  public static final PropertyKey KODO_ACCESS_KEY =
+      new Builder(Name.KODO_ACCESS_KEY)
+          .setDescription("The access key of KODO bucket.")
+          .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
+          .setScope(Scope.SERVER)
+          .setDisplayType(DisplayType.CREDENTIALS)
+          .build();
+  public static final PropertyKey KODO_SECRET_KEY =
+      new Builder(Name.KODO_SECRET_KEY)
+          .setDescription("The secret key of KODO bucket.")
+          .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
+          .setScope(Scope.SERVER)
+          .setDisplayType(DisplayType.CREDENTIALS)
+          .build();
+  public static final PropertyKey KODO_SOURCE_HOST =
+      new Builder(Name.KODO_SOURCE_HOST)
+          .setDescription("The  ource domain of KODO bucket.")
+          .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
+          .setScope(Scope.SERVER)
+          .setDisplayType(DisplayType.CREDENTIALS)
           .build();
 
   //
@@ -3205,6 +3223,9 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String SWIFT_TENANT_KEY = "fs.swift.tenant";
     public static final String SWIFT_USE_PUBLIC_URI_KEY = "fs.swift.use.public.url";
     public static final String SWIFT_USER_KEY = "fs.swift.user";
+    public static final String KODO_ACCESS_KEY = "fs.kodo.AccessKey";
+    public static final String KODO_SECRET_KEY = "fs.kodo.SecretKey";
+    public static final String KODO_SOURCE_HOST = "fs.kodo.SourceHost";
 
     //
     // Master related properties
