@@ -1,5 +1,6 @@
 alluxio.master.hostname=localhost
-alluxio.underfs.address=kodo://123123/conf/
-fs.oss.accessKeyId=ctR4HagSk3r37txaoj9LapKozUbAF4wioGheprsp
-fs.oss.accessKeySecret=***
-fs.oss.endpoint=onavshcir.com0.z0.glb.clouddn.com
+alluxio.underfs.address=kodo://alluxio3/
+fs.kodo.AccessKey="ak"
+fs.kodo.SecretKey="sk"
+fs.kodo.SourceHost=pfn55iwxb.bkt.clouddn.com
+alluxio.worker.memory.size=4GB
