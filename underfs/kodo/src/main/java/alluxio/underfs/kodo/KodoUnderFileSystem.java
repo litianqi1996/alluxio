@@ -35,13 +35,11 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
 
   private final KodoClient mKodoClinet;
 
-  private final String mBucketName;
 
-  protected KodoUnderFileSystem(AlluxioURI uri, KodoClient kodoclient, String bucketname,
+  protected KodoUnderFileSystem(AlluxioURI uri, KodoClient kodoclient,
       UnderFileSystemConfiguration conf) {
     super(uri, conf);
     mKodoClinet = kodoclient;
-    mBucketName = bucketname;
   }
 
   public static KodoUnderFileSystem creatInstance(AlluxioURI uri,
@@ -62,8 +60,9 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     Auth auth = Auth.create(AccessKey, SecretKey);
     Configuration configuration = new Configuration();
     OkHttpClient.Builder okHttpBuilder = initializeKodoClientConfig(conf);
-    KodoClient kodoClient = new KodoClient(auth, SouceHost, EndPoint, configuration, okHttpBuilder);
-    return new KodoUnderFileSystem(uri, kodoClient, bucketName, conf);
+    KodoClient kodoClient = new KodoClient(auth, bucketName, SouceHost, EndPoint, configuration,
+        okHttpBuilder);
+    return new KodoUnderFileSystem(uri, kodoClient, conf);
   }
 
   private static Builder initializeKodoClientConfig(UnderFileSystemConfiguration conf) {
@@ -95,24 +94,24 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   @Override
   protected boolean copyObject(String src, String dst) {
     LOG.debug("Copying {} to {}", src, dst);
-    return mKodoClinet.copyObject(mBucketName, src, dst);
+    return mKodoClinet.copyObject(src, dst);
   }
 
 
   @Override
   protected boolean createEmptyObject(String key) {
     LOG.debug("Create empty file", key);
-    return mKodoClinet.createEmptyObject(mBucketName, key);
+    return mKodoClinet.createEmptyObject(key);
   }
 
   @Override
   protected OutputStream createObject(String key) throws IOException {
-    return new KodoOutputStream(mBucketName, key, mKodoClinet);
+    return new KodoOutputStream(key, mKodoClinet);
   }
 
   @Override
   protected boolean deleteObject(String key) throws IOException {
-    return mKodoClinet.deleteObject(mBucketName, key);
+    return mKodoClinet.deleteObject(key);
   }
 
   @Override
@@ -135,7 +134,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   }
 
   private FileListing getObjectListingChunk(String prefix, int limit, String delimiter) {
-    return mKodoClinet.listFiles(mBucketName, prefix, null, limit, delimiter);
+    return mKodoClinet.listFiles(prefix, null, limit, delimiter);
   }
 
 
@@ -194,7 +193,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     public ObjectListingChunk getNextChunk() throws IOException {
       if (!mResult.isEOF()) {
         FileListing nextResult = mKodoClinet
-            .listFiles(mBucketName, mprefix, mResult.marker, mlimit, mdelimiter);
+            .listFiles(mprefix, mResult.marker, mlimit, mdelimiter);
         return new KodoObjectListingChunk(nextResult, mlimit, mdelimiter, mprefix);
       }
       return null;
@@ -213,8 +212,8 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   @Override
   protected ObjectStatus getObjectStatus(String key) throws IOException {
     try {
-      FileInfo fileInfo = mKodoClinet.getFileInfo(mBucketName, key);
-      return new ObjectStatus(mBucketName, fileInfo.hash, fileInfo.fsize, fileInfo.putTime / 10000);
+      FileInfo fileInfo = mKodoClinet.getFileInfo(key);
+      return new ObjectStatus(key, fileInfo.hash, fileInfo.fsize, fileInfo.putTime / 10000);
     } catch (Exception e) {
       LOG.error("get objectStatus err");
       e.printStackTrace();
@@ -232,7 +231,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   @Override
   protected InputStream openObject(String key, OpenOptions options) throws IOException {
     try {
-      return new KodoInputStream(mBucketName, key, mKodoClinet, options.getOffset());
+      return new KodoInputStream(key, mKodoClinet, options.getOffset());
     } catch (Exception e) {
 
       e.printStackTrace();
@@ -247,6 +246,6 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
    */
   @Override
   protected String getRootKey() {
-    return Constants.HEADER_KODO + mBucketName;
+    return Constants.HEADER_KODO + mKodoClinet.getmBucketName();
   }
 }

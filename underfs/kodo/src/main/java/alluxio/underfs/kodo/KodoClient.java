@@ -28,10 +28,13 @@ public class KodoClient {
   private String mEndPoint;
   private Auth mAuth;
   private OkHttpClient mOkHttpClient;
+  private String mBucketName;
 
 
-  public KodoClient(Auth auth, String SourceHost,String EndPoint,Configuration cfg,OkHttpClient.Builder builder) {
+  public KodoClient(Auth auth,String BucketName,String SourceHost, String EndPoint, Configuration cfg,
+      OkHttpClient.Builder builder) {
     mAuth = auth;
+    mBucketName=BucketName;
     mEndPoint=EndPoint;
     mSourceHost = SourceHost;
     mBucketManager = new BucketManager(mAuth, cfg);
@@ -39,9 +42,12 @@ public class KodoClient {
     mOkHttpClient  = builder.build();
   }
 
+  public String getmBucketName() {
+    return mBucketName;
+  }
 
-  public FileInfo getFileInfo(String bucketname, String key) throws Exception {
-    return mBucketManager.stat(bucketname, key);
+  public FileInfo getFileInfo( String key) throws Exception {
+    return mBucketManager.stat(mBucketName, key);
   }
 
 
@@ -59,6 +65,9 @@ public class KodoClient {
            .get()
            .build();
        Response response = mOkHttpClient.newCall(request).execute();
+      if (response.code() != 200 && response.code() != 206){
+        LOG.error("get object failed","errcode:",response.code(),"errcodemsg",response.message());
+       }
        return response.body().byteStream();
      }catch (Exception e){
        e.printStackTrace();
@@ -66,11 +75,11 @@ public class KodoClient {
      return null;
   }
 
-  public void uploadFile(String mBucketName, String mKey, File mFile) throws Exception {
+  public void uploadFile(String mKey, File mFile) throws Exception {
     mUploadManager.put(mFile, mKey, mAuth.uploadToken(mBucketName, mKey));
   }
 
-  public boolean copyObject(String mBucketName, String src, String dst) {
+  public boolean copyObject(String src, String dst) {
     try {
       mBucketManager.copy(mBucketName, src, mBucketName, dst);
       return true;
@@ -80,9 +89,9 @@ public class KodoClient {
     }
   }
 
-  public boolean createEmptyObject(String bucketname, String key) {
+  public boolean createEmptyObject(String key) {
     try {
-      mUploadManager.put(new byte[0], key, mAuth.uploadToken(bucketname, key));
+      mUploadManager.put(new byte[0], key, mAuth.uploadToken(mBucketName, key));
       return true;
     } catch (Exception e) {
       e.printStackTrace();
@@ -90,7 +99,7 @@ public class KodoClient {
     return false;
   }
 
-  public boolean deleteObject(String mBucketName, String key) {
+  public boolean deleteObject(String key) {
     try {
       mBucketManager.delete(mBucketName, key);
       return true;
@@ -101,10 +110,10 @@ public class KodoClient {
     }
   }
 
-  public FileListing listFiles(String bucketname, String prefix, String marker, int limit,
+  public FileListing listFiles( String prefix, String marker, int limit,
       String delimiter) {
     try {
-      return mBucketManager.listFiles(bucketname, prefix, marker, limit, delimiter);
+      return mBucketManager.listFiles(mBucketName, prefix, marker, limit, delimiter);
     } catch (QiniuException e) {
 
       e.printStackTrace();

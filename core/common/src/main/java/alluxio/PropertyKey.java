@@ -803,7 +803,7 @@ public final class PropertyKey implements Comparable<PropertyKey> {
           .build();
   public static final PropertyKey UNDERFS_KODO_CONNECT_TIMEOUT =
       new Builder(Name.UNDERFS_KODO_CONNECT_TIMEOUT)
-          .setDefaultValue(64)
+          .setDefaultValue("50sec")
           .setDescription("The connect timeout of kodo.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
           .setScope(Scope.SERVER)

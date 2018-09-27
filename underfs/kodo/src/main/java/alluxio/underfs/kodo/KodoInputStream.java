@@ -8,10 +8,6 @@ import java.io.InputStream;
 
 public class KodoInputStream extends MultiRangeObjectInputStream {
 
-  /**
-   * Bucket name of the Alluxio  bucket.
-   */
-  private final String mBucketName;
 
   /**
    * Key of the file in Kodo to read.
@@ -30,16 +26,15 @@ public class KodoInputStream extends MultiRangeObjectInputStream {
 
 
   KodoInputStream(String bucketname, String key, KodoClient kodoClient) throws Exception {
-    this(bucketname, key, kodoClient, 0L);
+    this(key, kodoClient, 0L);
   }
 
-  KodoInputStream(String bucketName, String key, KodoClient kodoClient, long position)
+  KodoInputStream(String key, KodoClient kodoClient, long position)
       throws Exception {
-    mBucketName = bucketName;
     mKey = key;
     mKodoclent = kodoClient;
     mPos = position;
-    mContentLength = kodoClient.getFileInfo(bucketName, key).fsize;
+    mContentLength = kodoClient.getFileInfo(key).fsize;
   }
 
   /**

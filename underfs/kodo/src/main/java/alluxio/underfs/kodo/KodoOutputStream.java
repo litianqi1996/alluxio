@@ -23,7 +23,6 @@ public class KodoOutputStream extends OutputStream {
 
   private static final Logger LOG = LoggerFactory.getLogger(KodoOutputStream.class);
 
-  private final String mBucketName;
 
   private final String mKey;
 
@@ -41,8 +40,7 @@ public class KodoOutputStream extends OutputStream {
   private AtomicBoolean mClosed = new AtomicBoolean(false);
 
 
-  public KodoOutputStream(String bucketName, String key, KodoClient kodoClient) throws IOException {
-    mBucketName = bucketName;
+  public KodoOutputStream(String key, KodoClient kodoClient) throws IOException {
     mKey = key;
     mKodoClient = kodoClient;
     mFile = new File(PathUtils.concatPath(CommonUtils.getTmpDir(), UUID.randomUUID()));
@@ -90,7 +88,7 @@ public class KodoOutputStream extends OutputStream {
     }
     try {
       mLocalOutputStream.close();
-      mKodoClient.uploadFile(mBucketName, mKey, mFile);
+      mKodoClient.uploadFile(mKey, mFile);
     } catch (Exception e) {
       e.printStackTrace();
     }
