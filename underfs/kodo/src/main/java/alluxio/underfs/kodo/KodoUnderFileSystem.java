@@ -16,7 +16,11 @@ import com.qiniu.util.Auth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
+import okhttp3.OkHttpClient.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,13 +53,25 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
         "Property %s is required to connect to kodo", PropertyKey.KODO_SECRET_KEY);
     Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_SOURCE_HOST),
         "Property %s is required to connect to kodo", PropertyKey.KODO_SOURCE_HOST);
+    Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_ENDPOINT),
+        "Property %s is required to connect to kodo", PropertyKey.KODO_ENDPOINT);
     String AccessKey = conf.get(PropertyKey.KODO_ACCESS_KEY);
     String SecretKey = conf.get(PropertyKey.KODO_SECRET_KEY);
-    String endPoint = conf.get(PropertyKey.KODO_SOURCE_HOST);
+    String EndPoint = conf.get(PropertyKey.KODO_ENDPOINT);
+    String SouceHost = conf.get(PropertyKey.KODO_SOURCE_HOST);
     Auth auth = Auth.create(AccessKey, SecretKey);
     Configuration configuration = new Configuration();
-    KodoClient kodoClient = new KodoClient(auth, endPoint, configuration);
+    OkHttpClient.Builder okHttpBuilder = initializeKodoClientConfig(conf);
+    KodoClient kodoClient = new KodoClient(auth, SouceHost, EndPoint, configuration, okHttpBuilder);
     return new KodoUnderFileSystem(uri, kodoClient, bucketName, conf);
+  }
+
+  private static Builder initializeKodoClientConfig(UnderFileSystemConfiguration conf) {
+    OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    Dispatcher dispatcher = new Dispatcher();
+    dispatcher.setMaxRequests(conf.getInt(PropertyKey.UNDERFS_KODO_REQUESTS_MAX));
+    builder.connectTimeout(conf.getInt(PropertyKey.UNDERFS_KODO_CONNECT_TIMEOUT), TimeUnit.SECONDS);
+    return builder;
   }
 
 
@@ -218,6 +234,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     try {
       return new KodoInputStream(mBucketName, key, mKodoClinet, options.getOffset());
     } catch (Exception e) {
+
       e.printStackTrace();
     }
     return null;
