@@ -106,6 +106,7 @@ public class KodoClient {
     try {
       return mBucketManager.listFiles(bucketname, prefix, marker, limit, delimiter);
     } catch (QiniuException e) {
+
       e.printStackTrace();
     }
     return null;

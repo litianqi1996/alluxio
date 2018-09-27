@@ -70,7 +70,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
     Dispatcher dispatcher = new Dispatcher();
     dispatcher.setMaxRequests(conf.getInt(PropertyKey.UNDERFS_KODO_REQUESTS_MAX));
-    builder.connectTimeout(conf.getInt(PropertyKey.UNDERFS_KODO_CONNECT_TIMEOUT), TimeUnit.SECONDS);
+    builder.connectTimeout(conf.getMs(PropertyKey.UNDERFS_KODO_CONNECT_TIMEOUT), TimeUnit.SECONDS);
     return builder;
   }
 

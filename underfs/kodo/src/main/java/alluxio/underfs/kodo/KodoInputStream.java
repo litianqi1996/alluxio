@@ -19,7 +19,7 @@ public class KodoInputStream extends MultiRangeObjectInputStream {
   private final String mKey;
 
   /**
-   * The KODO client for KODO operations.
+   * The Kodo client for Kodo operations.
    */
   private final KodoClient mKodoclent;
 
