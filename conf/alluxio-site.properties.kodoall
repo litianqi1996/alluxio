@@ -5,5 +5,6 @@ fs.kodo.SecretKey=ofYViDkgiOpWAMVkA8
 fs.kodo.SourceHost=oo6sb9bqe.bkt.clouddn.com
 fs.kodo.EndPoint=iovip.qbox.me
 alluxio.worker.memory.size=4GB
-alluxio.underfs.kodo.connect.timeout=50sec
-alluxio.undergs.kodo.requests.max=64
+
+#alluxio.underfs.kodo.connect.timeout=50sec
+#alluxio.undergs.kodo.requests.max=64

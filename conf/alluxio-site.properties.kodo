@@ -1,7 +1,0 @@
-alluxio.master.hostname=localhost
-alluxio.underfs.address=kodo://li-private/
-fs.kodo.AccessKey=ctR4HagSk3r37txaoj
-fs.kodo.SecretKey=ofYViDkgiOpWAMVkA8
-fs.kodo.SourceHost=oo6sb9bqe.bkt.clouddn.com
-fs.kodo.EndPoint=iovip.qbox.me
-alluxio.worker.memory.size=4GB
