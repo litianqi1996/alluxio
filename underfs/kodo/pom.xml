@@ -53,6 +53,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <testExcludes>
+                        <!-- Skip UFS contract tests unless -DtestKodoBucket="kodo://bucketName/testDir" is specified -->
+                        <exclude>**/KodoUnderFileSystemContractTest.java</exclude>
                     </testExcludes>
                 </configuration>
             </plugin>
