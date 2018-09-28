@@ -13,16 +13,17 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.storage.model.FileListing;
 import com.qiniu.util.Auth;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 public class KodoUnderFileSystem extends ObjectUnderFileSystem {
 
@@ -73,7 +74,6 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     return builder;
   }
 
-
   @Override
   public String getUnderFSType() {
     return "kodo";
@@ -90,13 +90,11 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   public void setMode(String path, short mode) throws IOException {
   }
 
-
   @Override
   protected boolean copyObject(String src, String dst) {
     LOG.debug("Copying {} to {}", src, dst);
     return mKodoClinet.copyObject(src, dst);
   }
-
 
   @Override
   protected boolean createEmptyObject(String key) {
@@ -137,13 +135,55 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     return mKodoClinet.listFiles(prefix, null, limit, delimiter);
   }
 
+  /**
+   * Get metadata information about object. Implementations should process the key as is, which may
+   * be a file or a directory key.
+   *
+   * @param key ufs key to get metadata for
+   * @return {@link ObjectStatus} if key exists and successful, otherwise null
+   */
+  @Nullable @Override protected ObjectStatus getObjectStatus(String key) throws IOException {
+    try {
+      FileInfo fileInfo = mKodoClinet.getFileInfo(key);
+      return new ObjectStatus(key, fileInfo.hash, fileInfo.fsize, fileInfo.putTime / 10000);
+    } catch (Exception e) {
+      LOG.error("get objectStatus err");
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  // No ACL integration currently, returns default empty value
+  @Override protected ObjectPermissions getPermissions() {
+    return new ObjectPermissions("", "", Constants.DEFAULT_FILE_SYSTEM_MODE);
+
+  }
+
+  @Override protected InputStream openObject(String key, OpenOptions options) throws IOException {
+    try {
+      return new KodoInputStream(key, mKodoClinet, options.getOffset());
+    } catch (Exception e) {
+
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /**
+   * Get full path of root in object store.
+   *
+   * @return full path including scheme and bucket
+   */
+  @Override protected String getRootKey() {
+    return Constants.HEADER_KODO + mKodoClinet.getmBucketName();
+  }
+
 
   private final class KodoObjectListingChunk implements ObjectListingChunk {
-
-    public FileListing mResult;
     final int mlimit;
-    final public String mdelimiter;
-    final public String mprefix;
+    final private String mdelimiter;
+    final private String mprefix;
+    private FileListing mResult;
 
 
     KodoObjectListingChunk(FileListing result, int limit, String delimiter, String prefix)
@@ -198,54 +238,5 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
       }
       return null;
     }
-  }
-
-
-  /**
-   * Get metadata information about object. Implementations should process the key as is, which may
-   * be a file or a directory key.
-   *
-   * @param key ufs key to get metadata for
-   * @return {@link ObjectStatus} if key exists and successful, otherwise null
-   */
-  @Nullable
-  @Override
-  protected ObjectStatus getObjectStatus(String key) throws IOException {
-    try {
-      FileInfo fileInfo = mKodoClinet.getFileInfo(key);
-      return new ObjectStatus(key, fileInfo.hash, fileInfo.fsize, fileInfo.putTime / 10000);
-    } catch (Exception e) {
-      LOG.error("get objectStatus err");
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  // No ACL integration currently, returns default empty value
-  @Override
-  protected ObjectPermissions getPermissions() {
-    return new ObjectPermissions("", "", Constants.DEFAULT_FILE_SYSTEM_MODE);
-
-  }
-
-  @Override
-  protected InputStream openObject(String key, OpenOptions options) throws IOException {
-    try {
-      return new KodoInputStream(key, mKodoClinet, options.getOffset());
-    } catch (Exception e) {
-
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  /**
-   * Get full path of root in object store.
-   *
-   * @return full path including scheme and bucket
-   */
-  @Override
-  protected String getRootKey() {
-    return Constants.HEADER_KODO + mKodoClinet.getmBucketName();
   }
 }

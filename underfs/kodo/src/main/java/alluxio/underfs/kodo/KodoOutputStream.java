@@ -1,21 +1,17 @@
 package alluxio.underfs.kodo;
 
-
 import alluxio.util.CommonUtils;
 import alluxio.util.io.PathUtils;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.concurrent.NotThreadSafe;
+import java.io.*;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.annotation.concurrent.NotThreadSafe;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @NotThreadSafe
@@ -38,7 +34,6 @@ public class KodoOutputStream extends OutputStream {
    * Flag to indicate this stream has been closed, to ensure close is only done once.
    */
   private AtomicBoolean mClosed = new AtomicBoolean(false);
-
 
   public KodoOutputStream(String key, KodoClient kodoClient) throws IOException {
     mKey = key;

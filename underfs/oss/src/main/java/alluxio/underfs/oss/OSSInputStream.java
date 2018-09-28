@@ -17,8 +17,6 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -33,7 +31,6 @@ import javax.annotation.concurrent.NotThreadSafe;
 @NotThreadSafe
 public class OSSInputStream extends MultiRangeObjectInputStream {
 
-  private static final Logger LOG = LoggerFactory.getLogger(OSSUnderFileSystem.class);
   /** Bucket name of the Alluxio OSS bucket. */
   private final String mBucketName;
 
@@ -45,7 +42,6 @@ public class OSSInputStream extends MultiRangeObjectInputStream {
 
   /** The size of the object in bytes. */
   private final long mContentLength;
-
 
   /**
    * Creates a new instance of {@link OSSInputStream}.
@@ -78,7 +74,6 @@ public class OSSInputStream extends MultiRangeObjectInputStream {
 
   @Override
   protected InputStream createStream(long startPos, long endPos) throws IOException {
-
     GetObjectRequest req = new GetObjectRequest(mBucketName, mKey);
     // OSS returns entire object if we read past the end
     req.setRange(startPos, endPos < mContentLength ? endPos - 1 : mContentLength - 1);
