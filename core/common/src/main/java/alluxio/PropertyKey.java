@@ -955,9 +955,9 @@ public final class PropertyKey implements Comparable<PropertyKey> {
           .setScope(Scope.SERVER)
           .setDisplayType(DisplayType.CREDENTIALS)
           .build();
-  public static final PropertyKey KODO_SOURCE_HOST =
-      new Builder(Name.KODO_SOURCE_HOST)
-          .setDescription("The  source domain of KODO bucket.")
+  public static final PropertyKey KODO_DOWNLOAD_HOST =
+      new Builder(Name.KODO_DOWNLOAD_HOST)
+          .setDescription("The Download domain of KODO bucket.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
           .setScope(Scope.SERVER)
           .build();
@@ -3217,7 +3217,7 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String UNDERFS_S3_UPLOAD_THREADS_MAX =
         "alluxio.underfs.s3.upload.threads.max";
     public static final String UNDERFS_KODO_CONNECT_TIMEOUT = "alluxio.underfs.kodo.connect.timeout";
-    public static final String UNDERFS_KODO_REQUESTS_MAX = "alluxio.undergs.kodo.requests.max";
+    public static final String UNDERFS_KODO_REQUESTS_MAX = "alluxio.underfs.kodo.requests.max";
 
 
     //
@@ -3249,7 +3249,7 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String KODO_ACCESS_KEY = "fs.kodo.AccessKey";
     public static final String KODO_SECRET_KEY = "fs.kodo.SecretKey";
     public static final String KODO_ENDPOINT = "fs.kodo.EndPoint";
-    public static final String KODO_SOURCE_HOST = "fs.kodo.SourceHost";
+    public static final String KODO_DOWNLOAD_HOST = "fs.kodo.DownloadHost";
 
 
     //

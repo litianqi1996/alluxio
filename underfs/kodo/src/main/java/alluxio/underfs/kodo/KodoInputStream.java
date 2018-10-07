@@ -5,9 +5,11 @@ import alluxio.underfs.MultiRangeObjectInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
+/**
+ * A stream for reading a file from Kodo. This input stream returns 0 when calling read with an
+ * empty buffer.
+ */
 public class KodoInputStream extends MultiRangeObjectInputStream {
-
 
   /**
    * Key of the file in Kodo to read.
@@ -24,13 +26,11 @@ public class KodoInputStream extends MultiRangeObjectInputStream {
    */
   private final long mContentLength;
 
-
   KodoInputStream(String bucketname, String key, KodoClient kodoClient) throws Exception {
     this(key, kodoClient, 0L);
   }
 
-  KodoInputStream(String key, KodoClient kodoClient, long position)
-      throws Exception {
+  KodoInputStream(String key, KodoClient kodoClient, long position) throws Exception {
     mKey = key;
     mKodoclent = kodoClient;
     mPos = position;

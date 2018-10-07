@@ -2,23 +2,31 @@ package alluxio.underfs.kodo;
 
 import alluxio.util.CommonUtils;
 import alluxio.util.io.PathUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.concurrent.NotThreadSafe;
 
+/**
+ * A stream for writing a file into Qiniu. The data will be persisted to a temporary directory on
+ *  the local disk and copied as a complete file when the {@link #close()} method is called.
+ */
 @NotThreadSafe
 public class KodoOutputStream extends OutputStream {
 
   private static final Logger LOG = LoggerFactory.getLogger(KodoOutputStream.class);
-
 
   private final String mKey;
 
@@ -35,6 +43,12 @@ public class KodoOutputStream extends OutputStream {
    */
   private AtomicBoolean mClosed = new AtomicBoolean(false);
 
+  /**
+   * Creates a name instance of {@link KodoOutputStream}.
+   *
+   * @param key the key of the file
+   * @param kodoClient the client for Kodo
+   */
   public KodoOutputStream(String key, KodoClient kodoClient) throws IOException {
     mKey = key;
     mKodoClient = kodoClient;

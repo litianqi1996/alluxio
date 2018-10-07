@@ -7,60 +7,104 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.storage.model.FileListing;
 import com.qiniu.util.Auth;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Client or Kodo under file system.
+ */
 public class KodoClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(KodoOutputStream.class);
-  private BucketManager mBucketManager;
-  private UploadManager mUploadManager;
-  private String mSourceHost;
-  private String mEndPoint;
+  /** Qiniu  authentication for Qiniu SDK. */
   private Auth mAuth;
+
+  /** bucket manager for Qiniu SDK.*/
+  private BucketManager mBucketManager;
+
+  /** upload manager for Qiniu SDK.*/
+  private UploadManager mUploadManager;
+
+  /** Http client for get Object. */
   private OkHttpClient mOkHttpClient;
+
+  /** Bucket name of the Alluxio Kodo bucket. */
   private String mBucketName;
 
-  public KodoClient(Auth auth, String BucketName, String SourceHost, String EndPoint,
+  /** Qiniu Kodo download Host.  */
+  private String mDownloadHost;
+
+  /** Endpoint for Qiniu kodo. */
+  private String mEndPoint;
+
+  /**
+   * Creates a new instance of {@link KodoClient}.
+   * @param auth Qiniu authentication
+   * @param BucketName  bucketname for kodo
+   * @param DownloadHost download host for kodo
+   * @param EndPoint   endpoint for kodo
+   * @param cfg   configuration for Qiniu SDK
+   * @param builder  okhttp builder
+   */
+  public KodoClient(Auth auth, String BucketName, String DownloadHost, String EndPoint,
       Configuration cfg, OkHttpClient.Builder builder) {
     mAuth = auth;
     mBucketName = BucketName;
     mEndPoint = EndPoint;
-    mSourceHost = SourceHost;
+    mDownloadHost = DownloadHost;
     mBucketManager = new BucketManager(mAuth, cfg);
     mUploadManager = new UploadManager(cfg);
     mOkHttpClient = builder.build();
   }
 
-  public String getmBucketName() {
+  /**
+   * get bucketname for kodoclient.
+   * @return bucketname
+   */
+  public String getBucketName() {
     return mBucketName;
   }
 
-  public FileInfo getFileInfo(String key) throws Exception {
+  /**
+   * get file info for Qiniu kodo.
+   * @param key  Object jey
+   * @return  Qiniu FileInfo
+   * @throws QiniuException
+   */
+  public FileInfo getFileInfo(String key) throws QiniuException {
     return mBucketManager.stat(mBucketName, key);
   }
 
+  /**
+   *  get object from Qiniu kodo.
+   * @param key object key
+   * @param startPos  start index for object
+   * @param endPos  end index for object
+   * @return inputstream
+   * @throws IOException
+   */
   public InputStream getObject(String key, long startPos, long endPos) throws IOException {
-    //All requests are authenticated by default
+    // All requests are authenticated by default
     // default expires 3600s
-    String baseUrl = String.format("http://%s/%s", mSourceHost, key);
+    String baseUrl = String.format("http://%s/%s", mDownloadHost, key);
     String privateUrl = mAuth.privateDownloadUrl(baseUrl);
     URL url = new URL(privateUrl);
-    String ObjectUrl = String.format("http://%s/%s?%s", mEndPoint, key, url.getQuery());
+    String objectUrl = String.format("http://%s/%s?%s", mEndPoint, key, url.getQuery());
     try {
-      Request request = new Request.Builder().url(ObjectUrl)
+      Request request = new Request.Builder().url(objectUrl)
           .addHeader("Range",
               "bytes=" + String.valueOf(startPos) + "-" + String.valueOf(endPos - 1))
-          .addHeader("Host", mSourceHost)
-          .get()
-          .build();
+          .addHeader("Host", mDownloadHost).get().build();
       Response response = mOkHttpClient.newCall(request).execute();
       if (response.code() != 200 && response.code() != 206) {
         LOG.error("get object failed", "errcode:", response.code(), "errcodemsg",
@@ -73,10 +117,27 @@ public class KodoClient {
     return null;
   }
 
-  public void uploadFile(String mKey, File mFile) throws Exception {
-    mUploadManager.put(mFile, mKey, mAuth.uploadToken(mBucketName, mKey));
+  /**
+   *  Put Object to Qiniu kodo .
+   * @param Key  Object key for kodo
+   * @param File  Alluxio File
+   */
+  public void uploadFile(String Key, File File) {
+    try {
+      com.qiniu.http.Response response =
+          mUploadManager.put(File, Key, mAuth.uploadToken(mBucketName, Key));
+      response.close();
+    } catch (QiniuException e) {
+      LOG.error("put file failed :{}", e.getMessage());
+    }
   }
 
+  /**
+   * copy object in Qiniu kodo .
+   * @param src  source Object key
+   * @param dst  destination Object Key
+   * @return  bool
+   */
   public boolean copyObject(String src, String dst) {
     try {
       mBucketManager.copy(mBucketName, src, mBucketName, dst);
@@ -87,6 +148,11 @@ public class KodoClient {
     }
   }
 
+  /**
+   * create empty Object in Qiniu kodo.
+   * @param key empty Object key
+   * @return bool
+   */
   public boolean createEmptyObject(String key) {
     try {
       mUploadManager.put(new byte[0], key, mAuth.uploadToken(mBucketName, key));
@@ -97,19 +163,31 @@ public class KodoClient {
     return false;
   }
 
+  /**
+   * delete Object in Qiniu kodo.
+   * @param  key  Object key
+   * @return bool
+   */
   public boolean deleteObject(String key) {
     try {
       mBucketManager.delete(mBucketName, key);
       return true;
     } catch (Exception e) {
       e.printStackTrace();
-
       return false;
     }
   }
 
-  public FileListing listFiles(String prefix, String marker, int limit,
-      String delimiter) {
+  /**
+   *  list object for Qiniu kodo.
+   * @param prefix  prefix for bucket
+   * @param marker  Marker returned the last time a file list was obtained
+   * @param limit   Length limit for each iteration, Max. 1000
+   * @param delimiter Specifies a directory separator that lists all common prefixes
+   *                  (simulated listing directory effects). The default is an empty string
+   * @return  result for list
+   */
+  public FileListing listFiles(String prefix, String marker, int limit, String delimiter) {
     try {
       return mBucketManager.listFiles(mBucketName, prefix, marker, limit, delimiter);
     } catch (QiniuException e) {

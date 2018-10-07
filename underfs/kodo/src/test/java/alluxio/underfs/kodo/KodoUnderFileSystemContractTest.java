@@ -8,7 +8,7 @@ import com.google.common.base.Preconditions;
 
 import org.junit.BeforeClass;
 
-public class KodoUnderFileSystemContractTest  extends AbstractUnderFileSystemContractTest {
+public class KodoUnderFileSystemContractTest extends AbstractUnderFileSystemContractTest {
 
   private static final String KODO_BUCKET_CONF = "testKodoBucket";
   private static final String KODO_BUCKET = System.getProperty(KODO_BUCKET_CONF);
