@@ -1,3 +1,14 @@
+/*
+ * The Alluxio Open Foundation licenses this work under the Apache License, version 2.0
+ * (the "License"). You may not use this work except in compliance with the License, which is
+ * available at www.apache.org/licenses/LICENSE-2.0
+ *
+ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied, as more fully set forth in the License.
+ *
+ * See the NOTICE file distributed with this work for information regarding copyright ownership.
+ */
+
 package alluxio.underfs.kodo;
 
 import com.qiniu.common.QiniuException;
@@ -76,7 +87,7 @@ public class KodoClient {
   }
 
   /**
-   * get file info for Qiniu kodo.
+   * get file from for Qiniu kodo.
    * @param key  Object jey
    * @return  Qiniu FileInfo
    * @throws QiniuException
@@ -87,6 +98,9 @@ public class KodoClient {
 
   /**
    *  get object from Qiniu kodo.
+   *  All requests are authenticated by default，default expires 3600s
+   *  We use okhttp as our  HTTP client and support two main parameters in the external adjustment,
+   *  MAX request and timeout time.
    * @param key object key
    * @param startPos  start index for object
    * @param endPos  end index for object
@@ -94,8 +108,7 @@ public class KodoClient {
    * @throws IOException
    */
   public InputStream getObject(String key, long startPos, long endPos) throws IOException {
-    // All requests are authenticated by default
-    // default expires 3600s
+
     String baseUrl = String.format("http://%s/%s", mDownloadHost, key);
     String privateUrl = mAuth.privateDownloadUrl(baseUrl);
     URL url = new URL(privateUrl);
@@ -107,7 +120,7 @@ public class KodoClient {
           .addHeader("Host", mDownloadHost).get().build();
       Response response = mOkHttpClient.newCall(request).execute();
       if (response.code() != 200 && response.code() != 206) {
-        LOG.error("get object failed", "errcode:", response.code(), "errcodemsg",
+        LOG.error("get object failed", "errcode:{}  errcodemsg:{}", response.code(),
             response.message());
       }
       return response.body().byteStream();
@@ -118,7 +131,7 @@ public class KodoClient {
   }
 
   /**
-   *  Put Object to Qiniu kodo .
+   *  Put Object to Qiniu kodo.
    * @param Key  Object key for kodo
    * @param File  Alluxio File
    */
@@ -128,12 +141,12 @@ public class KodoClient {
           mUploadManager.put(File, Key, mAuth.uploadToken(mBucketName, Key));
       response.close();
     } catch (QiniuException e) {
-      LOG.error("put file failed :{}", e.getMessage());
+      LOG.error("put file failed :{},errmsg:{}", Key, e);
     }
   }
 
   /**
-   * copy object in Qiniu kodo .
+   * copy object in Qiniu kodo.
    * @param src  source Object key
    * @param dst  destination Object Key
    * @return  bool
@@ -142,8 +155,8 @@ public class KodoClient {
     try {
       mBucketManager.copy(mBucketName, src, mBucketName, dst);
       return true;
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (QiniuException e) {
+      LOG.error("copy file failed errmsg:{}", e);
       return false;
     }
   }
@@ -157,8 +170,8 @@ public class KodoClient {
     try {
       mUploadManager.put(new byte[0], key, mAuth.uploadToken(mBucketName, key));
       return true;
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (QiniuException e) {
+      LOG.error("create object {} failed ,errmsg:{}", key, e);
     }
     return false;
   }
@@ -172,8 +185,8 @@ public class KodoClient {
     try {
       mBucketManager.delete(mBucketName, key);
       return true;
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (QiniuException e) {
+      LOG.error("delete object {}failed,errmsg:{}", key, e);
       return false;
     }
   }
@@ -191,10 +204,8 @@ public class KodoClient {
     try {
       return mBucketManager.listFiles(mBucketName, prefix, marker, limit, delimiter);
     } catch (QiniuException e) {
-
-      e.printStackTrace();
+      LOG.warn("list failed  errmsg:{}", e);
     }
     return null;
   }
-
 }

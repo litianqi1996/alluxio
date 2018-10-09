@@ -80,6 +80,5 @@ public class KodoUnderFileSystemTest {
     boolean result = mKodoUnderFileSystem.renameFile(SRC, DST);
     Assert.assertFalse(result);
   }
-
 }
 
