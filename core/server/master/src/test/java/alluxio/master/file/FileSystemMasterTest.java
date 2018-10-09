@@ -1097,7 +1097,6 @@ public final class FileSystemMasterTest {
     infos = mFileSystemMaster.listStatus(ROOT_URI, ListStatusOptions.defaults()
         .setLoadMetadataType(LoadMetadataType.Always).setRecursive(true));
     assertEquals(files + files +  2 + 2 + 2 , infos.size());
-
   }
 
   @Test
@@ -2234,12 +2233,16 @@ public final class FileSystemMasterTest {
   @Test
   public void mountShadowDir() throws Exception {
     AlluxioURI alluxioURI = new AlluxioURI("/hello");
-    AlluxioURI ufsURI = createTempUfsDir("ufs/hello");
-    mFileSystemMaster.mount(alluxioURI, ufsURI, MountOptions.defaults());
+    AlluxioURI ufsURI = createTempUfsDir("ufs/hello/shadow");
+
+    mFileSystemMaster.mount(alluxioURI, ufsURI.getParent(), MountOptions.defaults());
     AlluxioURI shadowAlluxioURI = new AlluxioURI("/hello/shadow");
-    AlluxioURI anotherUfsURI = createTempUfsDir("ufs/hi");
-    mThrown.expect(InvalidPathException.class);
-    mFileSystemMaster.mount(shadowAlluxioURI, anotherUfsURI, MountOptions.defaults());
+    AlluxioURI notShadowAlluxioURI = new AlluxioURI("/hello/notshadow");
+    AlluxioURI shadowUfsURI = createTempUfsDir("ufs/hi");
+    AlluxioURI notShadowUfsURI = createTempUfsDir("ufs/notshadowhi");
+    mFileSystemMaster.mount(notShadowAlluxioURI, notShadowUfsURI, MountOptions.defaults());
+    mThrown.expect(IOException.class);
+    mFileSystemMaster.mount(shadowAlluxioURI, shadowUfsURI, MountOptions.defaults());
   }
 
   /**
@@ -2366,12 +2369,7 @@ public final class FileSystemMasterTest {
     FileSystemCommand command = mFileSystemMaster
         .workerHeartbeat(mWorkerId1, Lists.newArrayList(fileId), WorkerHeartbeatOptions.defaults());
     assertEquals(CommandType.Persist, command.getCommandType());
-    assertEquals(1,
-        command.getCommandOptions().getPersistOptions().getPersistFiles().size());
-    assertEquals(fileId,
-        command.getCommandOptions().getPersistOptions().getPersistFiles().get(0).getFileId());
-    assertEquals(blockId, (long) command.getCommandOptions().getPersistOptions()
-        .getPersistFiles().get(0).getBlockIds().get(0));
+    assertEquals(0, command.getCommandOptions().getPersistOptions().getPersistFiles().size());
   }
 
   /**
@@ -2470,8 +2468,7 @@ public final class FileSystemMasterTest {
     mFileSystemMaster.loadMetadata(uri,
         LoadMetadataOptions.defaults().setCreateAncestors(true));
     FileInfo info = mFileSystemMaster.getFileInfo(uri, GetStatusOptions.defaults());
-    Assert.assertTrue(info.convertAclToStringEntries().contains("user::rw-"));
-
+    Assert.assertTrue(info.convertAclToStringEntries().contains("user::r-x"));
   }
 
   /**

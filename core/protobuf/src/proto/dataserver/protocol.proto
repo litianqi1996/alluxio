@@ -3,6 +3,7 @@ syntax = "proto2";
 package alluxio.proto.dataserver;
 
 import "dataserver/status.proto";
+import "shared/acl.proto";
 
 // The read/write request type. It can either be an Alluxio block operation or a UFS file operation.
 // next available id: 2
@@ -57,7 +58,7 @@ message OpenUfsBlockOptions {
 }
 
 // The write request.
-// next available id: 8
+// next available id: 9
 message WriteRequest {
   optional RequestType type = 1;
   // The block ID or UFS file ID.
@@ -72,6 +73,8 @@ message WriteRequest {
 
   // This is only applicable for ufs writes.
   optional CreateUfsFileOptions create_ufs_file_options = 7;
+
+  optional bool flush = 8;
 }
 
 // Options to create a UFS file.
@@ -82,6 +85,7 @@ message CreateUfsFileOptions {
   optional string group = 3;
   optional int32 mode = 4;
   optional int64 mount_id = 5;
+  optional alluxio.proto.shared.AccessControlList acl = 6;
 }
 
 // The response.
@@ -143,4 +147,9 @@ message LocalBlockCreateResponse {
 message LocalBlockCompleteRequest {
   optional int64 block_id = 1;
   optional bool cancel = 2;
+}
+
+// next available id: 2
+message RemoveBlockRequest {
+  optional int64 block_id = 1;
 }
