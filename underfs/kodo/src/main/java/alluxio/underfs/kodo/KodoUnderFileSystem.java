@@ -52,7 +52,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   /**
    * Suffix for an empty file to flag it as a directory.
    */
-  private static final String FOLDER_SUFFIX = "_$folder$";
+  private static final String FOLDER_SUFFIX = "/";
 
   private final KodoClient mKodoClinet;
 
@@ -239,7 +239,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     @Override
     public String[] getCommonPrefixes() {
       if (mResult.commonPrefixes == null) {
-        return new String[] {mPrefix};
+        return new String[] {};
       }
       return mResult.commonPrefixes;
     }
