@@ -3399,10 +3399,10 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String SWIFT_TENANT_KEY = "fs.swift.tenant";
     public static final String SWIFT_USE_PUBLIC_URI_KEY = "fs.swift.use.public.url";
     public static final String SWIFT_USER_KEY = "fs.swift.user";
-    public static final String KODO_ACCESS_KEY = "fs.kodo.AccessKey";
-    public static final String KODO_SECRET_KEY = "fs.kodo.SecretKey";
-    public static final String KODO_ENDPOINT = "fs.kodo.EndPoint";
-    public static final String KODO_DOWNLOAD_HOST = "fs.kodo.DownloadHost";
+    public static final String KODO_ACCESS_KEY = "fs.kodo.accesskey";
+    public static final String KODO_SECRET_KEY = "fs.kodo.secretkey";
+    public static final String KODO_ENDPOINT = "fs.kodo.endpoint";
+    public static final String KODO_DOWNLOAD_HOST = "fs.kodo.downloadhost";
 
 
     //
