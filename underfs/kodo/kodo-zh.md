@@ -40,9 +40,9 @@ fs.kodo.downloadhost=<KODO_DOWNLOAD_HOST>
 fs.kodo.endpoint=<KODO_ENDPOINT>
 ```
 
-此处, `fs.kodo.AccessKey `和`fs.kodo.SecretKey`分别为`AccessKey`字符串和`SecretKey`字符串，均受七牛云[密钥管理界面](https://portal.qiniu.com/user/key)管理
+首先, 你可以从[七牛密钥管理](https://portal.qiniu.com/user/key)中 获取 `AccessKey/SecretKey`
 
-`fs.kodo.downloadhost` 可以在[七牛云对象存储管理平台](https://portal.qiniu.com/bucket) 中的空间概览中获取[访问测试域名](https://mars-assets.qnssl.com/alluxio_host.png)
+`fs.kodo.downloadhost` 可以在[七牛云对象存储管理平台](https://portal.qiniu.com/bucket) 中的空间概览中获取[访问域名](https://mars-assets.qnssl.com/alluxio_host.png)
 
 `fs.kodo.endpoint` 是七牛云存储源站的端点域名配置 可以根据存储空间所在存储区域进行配置
 

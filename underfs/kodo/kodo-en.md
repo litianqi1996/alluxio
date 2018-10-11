@@ -10,7 +10,7 @@ priority: 4
 {:toc}
 
 This guide describes how to configure Alluxio with
-[Qiniu KODO](https://www.qiniu.com/products/kodo) as the under storage system. Object Storage
+[Qiniu Kodo](https://www.qiniu.com/products/kodo) as the under storage system. Qiniu Object Storage
 Service (Kodo) is a massive, secure and highly reliable cloud storage service provided by Qiniu.
 
 ## Initial Setup
@@ -21,11 +21,8 @@ machines.You can either
 or [download the precompiled binaries directly](Running-Alluxio-Locally.html).
 
 Also, in preparation for using Kodo with alluxio, create a bucket or use an existing bucket. You
-should also note the directory you want to use in that bucket, either by creating a new
-directory in the bucket, or using an existing one. For the purposes of this guide, the Kodo bucket
-name is called `KODO_BUCKET`, and the directory in that bucket is called `KODO_DIRECTORY`. To use the seven cattle object storage service, we need to provide a domain name to identify the specified bucket,for name is called `KODO_DOWNLOAD_HOST` .Also, for
-using the Qiniu Service, you should provide an Kodo endpoint to specify which range your bucket is
-on. The endpoint here is called `Kodo_ENDPOINT`, 
+should also note the directory you want to use in that bucket. For the purposes of this guide, the Kodo bucket
+name is called `KODO_BUCKET`, and the directory in that bucket is called `KODO_DIRECTORY`. To use the Qiniu object storage service, we need to provide a domain to identify the specified bucket, for name is called `KODO_DOWNLOAD_HOST` .Also, in order to use Qiniu Kodo Service, you should provide an Kodo endpoint to specify which range your bucket is on. The endpoint here is called `KODO_ENDPOINT`.
 
 ## Mounting Kodo
 
@@ -43,27 +40,28 @@ specify an existing Kodo bucket and directory as the under storage system by mod
 alluxio.underfs.address=kodo://<KODO_BUCKET>/<KODO_DIRECTORY>/
 ```
 
-Next you need to specify for Kodo access. In `conf/alluxio-site.properties`,
-add:
+Next you need to specify following settings to access your bucket.
+
+ In `conf/alluxio-site.properties`, add:
 
 ```
 
-fs.kodo.AccessKey=<KODO_ACCESS_KEY>
+fs.kodo.accesskey=<KODO_ACCESS_KEY>
 
-fs.kodo.SecretKey=<KODO_SECRET_KET>
+fs.kodo.secretkey=<KODO_SECRET_KET>
 
-fs.kodo.DownloadHost=<KODO_DOWNLOAD_HOST>
+fs.kodo.downloadhost=<KODO_DOWNLOAD_HOST>
 
-fs.kodo.EndPoint=<KODO_ENDPOINT>
+fs.kodo.endpoint=<KODO_ENDPOINT>
 
 ```
 
-Here `fs.kodo.AccessKey `  and `fs.kodo.SecretKey` is the Access
-Key Secret string, which are managed in [AccessKeys](https://portal.qiniu.com/user/key) in Qiniu Portal Manager.
-`fs.kodo.DownloadHost`  can be found in [Qiniu Kodo](https://portal.qiniu.com/bucket) 
+First ,you can get your `AccessKey/SecretKey` in [Qiniu Console - AccessKeys](https://portal.qiniu.com/user/key)
+
+`fs.kodo.downloadhost` can be found in [Qiniu Kodo](https://portal.qiniu.com/bucket) 
 according to this [order](https://mars-assets.qnssl.com/alluxio_host.png)
 
-`fs.kodo.EndPoint` is the endpoint of this bucket, which can be found in the Bucket in this table
+`fs.kodo.endpoint` is the endpoint of this bucket, which can be found in the Bucket in this table
 
 | Region | Abbreviation| EndPoint |
 | ------- | -------- | --------- |
@@ -84,10 +82,10 @@ For example, the following command mounts a directory inside an Kodo bucket into
 
 ```bash 
 $ ./bin/alluxio fs mount --option fs.kodo.AccessKey=<KODO_ACCESS_KEY> \
-  --option fs.kodo.SecretKey=<KODO_SECRET_KET> \
-  --option fs.kodo.DownloadHost=<KODO_DOWNLOAD_HOST> \
-  --option fs.kodo.EndPoint=<KODO_ENDPOINT> \
-  kodo://<KODO_BUCKET>/<KODO_DIRECTORY>//
+  --option fs.kodo.secretkey=<KODO_SECRET_KET> \
+  --option fs.kodo.downloadhost=<KODO_DOWNLOAD_HOST> \
+  --option fs.kodo.endpoint=<KODO_ENDPOINT> \
+  kodo/ kodo://<KODO_BUCKET>/<KODO_DIRECTORY>/
 ```
 
 ## Running Alluxio Locally with Kodo
@@ -108,7 +106,7 @@ Next, you can run a simple example program:
 $ bin/alluxio runTests
 ```
 
-After this succeeds, you can visit your Kodo directory `KODO://<KODO_BUCKET>/<KODO_DIRECTORY>` to verify the files
+After this succeeds, you can visit your Kodo directory `kodo://<KODO_BUCKET>/<KODO_DIRECTORY>` to verify the files
 and directories created by Alluxio exist. For this test, you should see files named like
 `KODO_BUCKET/KODO_DIRECTORY/default_tests_files/BasicFile_CACHE_PROMOTE_MUST_CACHE`.
 
