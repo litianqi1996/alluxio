@@ -168,6 +168,7 @@ public class OSSUnderFileSystem extends ObjectUnderFileSystem {
     request.setPrefix(key);
     request.setMaxKeys(getListingChunkLength());
     request.setDelimiter(delimiter);
+
     ObjectListing result = getObjectListingChunk(request);
     if (result != null) {
       return new OSSObjectListingChunk(request, result);
