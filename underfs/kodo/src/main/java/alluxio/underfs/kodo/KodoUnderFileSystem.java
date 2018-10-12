@@ -108,12 +108,24 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
 
   @Override
   protected boolean copyObject(String src, String dst) {
-    return mKodoClinet.copyObject(src, dst);
+    try {
+      mKodoClinet.copyObject(src, dst);
+      return true;
+    } catch (QiniuException e) {
+      LOG.error("copy Object failed {} to {} , Msg:{}", src, dst, e);
+    }
+    return false;
   }
 
   @Override
   protected boolean createEmptyObject(String key) {
-    return mKodoClinet.createEmptyObject(key);
+    try {
+      mKodoClinet.createEmptyObject(key);
+      return true;
+    } catch (QiniuException e) {
+      LOG.error("create empty object failed key:{} , Msg:{}", key, e);
+    }
+    return false;
   }
 
   @Override
@@ -123,7 +135,13 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
 
   @Override
   protected boolean deleteObject(String key) {
-    return mKodoClinet.deleteObject(key);
+    try {
+      mKodoClinet.deleteObject(key);
+      return true;
+    } catch (QiniuException e) {
+      LOG.error("delete object failed key:{}, Msg:{}", key, e);
+    }
+    return false;
   }
 
   @Override
@@ -146,7 +164,12 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   }
 
   private FileListing getObjectListingChunk(String prefix, int limit, String delimiter) {
-    return mKodoClinet.listFiles(prefix, null, limit, delimiter);
+    try {
+      return mKodoClinet.listFiles(prefix, null, limit, delimiter);
+    } catch (QiniuException e) {
+      LOG.error("list objects failed ,Msg:{}", e);
+      return null;
+    }
   }
 
   /**
@@ -158,7 +181,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
    */
   @Nullable
   @Override
-  protected ObjectStatus getObjectStatus(String key) throws IOException {
+  protected ObjectStatus getObjectStatus(String key) {
     try {
       FileInfo fileInfo = mKodoClinet.getFileInfo(key);
       if (fileInfo == null) {
@@ -167,8 +190,6 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
       return new ObjectStatus(key, fileInfo.hash, fileInfo.fsize, fileInfo.putTime / 10000);
     } catch (QiniuException e) {
       LOG.warn("Failed to get Object {}, Msg:{}", key, e);
-
-      e.printStackTrace();
     }
     return null;
   }
@@ -180,11 +201,11 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
   }
 
   @Override
-  protected InputStream openObject(String key, OpenOptions options) throws IOException {
+  protected InputStream openObject(String key, OpenOptions options) {
     try {
       return new KodoInputStream(key, mKodoClinet, options.getOffset());
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (QiniuException e) {
+      LOG.error("Failed to open Object {},Msg:{}", key, e);
     }
     return null;
   }
@@ -214,7 +235,7 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
     }
 
     /**
-     * @return
+     * @return objects info
      */
     @Override
     public ObjectStatus[] getObjectStatuses() {

@@ -32,7 +32,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 
 /**
  * A stream for writing a file into Qiniu. The data will be persisted to a temporary directory on
- *  the local disk and copied as a complete file when the {@link #close()} method is called.
+ * the local disk and copied as a complete file when the {@link #close()} method is called.
  */
 @NotThreadSafe
 public class KodoOutputStream extends OutputStream {

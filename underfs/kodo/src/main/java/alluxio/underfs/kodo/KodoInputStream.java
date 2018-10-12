@@ -13,6 +13,8 @@ package alluxio.underfs.kodo;
 
 import alluxio.underfs.MultiRangeObjectInputStream;
 
+import com.qiniu.common.QiniuException;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -37,7 +39,7 @@ public class KodoInputStream extends MultiRangeObjectInputStream {
    */
   private final long mContentLength;
 
-  KodoInputStream(String key, KodoClient kodoClient, long position) throws Exception {
+  KodoInputStream(String key, KodoClient kodoClient, long position) throws QiniuException {
     mKey = key;
     mKodoclent = kodoClient;
     mPos = position;
