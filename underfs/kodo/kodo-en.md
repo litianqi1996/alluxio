@@ -20,9 +20,8 @@ machines.You can either
 [compile the binaries from Alluxio source code](Building-Alluxio-From-Source.html),
 or [download the precompiled binaries directly](Running-Alluxio-Locally.html).
 
-Also, in preparation for using Kodo with alluxio, create a bucket or use an existing bucket. You
-should also note the directory you want to use in that bucket. For the purposes of this guide, the Kodo bucket
-name is called `KODO_BUCKET`, and the directory in that bucket is called `KODO_DIRECTORY`. To use the Qiniu object storage service, we need to provide a domain to identify the specified bucket, for name is called `KODO_DOWNLOAD_HOST` .Also, in order to use Qiniu Kodo Service, you should provide an Kodo endpoint to specify which range your bucket is on. The endpoint here is called `KODO_ENDPOINT`.
+In preparation for using Kodo with alluxio, create a bucket or use an existing bucket. You should also note the directory you want to use is existed in that bucket. For the purposes of this guide, the Kodo bucket
+name is called `KODO_BUCKET`, and the directory in that bucket is called `KODO_DIRECTORY`. To use the Qiniu object storage service, we need to provide a domain to identify the specified bucket, which name is called `KODO_DOWNLOAD_HOST` .Also, in order to use Qiniu Kodo Service, you should provide an Kodo endpoint to specify which range your bucket is on. The endpoint here is called `KODO_ENDPOINT`.
 
 ## Mounting Kodo
 
@@ -32,7 +31,7 @@ either mounted at the root of the Alluxio namespace or at a nested directory.
 
 ### Root Mount
 
-You need to configure Alluxio to use Kodo as its under storage system. The first modification is to
+If you want to use Qiniu Kodo as its under storage system in Alluxio. The first modification is to
 specify an existing Kodo bucket and directory as the under storage system by modifying
 `conf/alluxio-site.properties` to include:
 
@@ -81,7 +80,7 @@ access to multiple under storage systems. Alluxio's
 For example, the following command mounts a directory inside an Kodo bucket into Alluxio directory
 
 ```bash 
-$ ./bin/alluxio fs mount --option fs.kodo.AccessKey=<KODO_ACCESS_KEY> \
+$ ./bin/alluxio fs mount --option fs.kodo.accessKey=<KODO_ACCESS_KEY> \
   --option fs.kodo.secretkey=<KODO_SECRET_KET> \
   --option fs.kodo.downloadhost=<KODO_DOWNLOAD_HOST> \
   --option fs.kodo.endpoint=<KODO_ENDPOINT> \
@@ -107,7 +106,7 @@ $ bin/alluxio runTests
 ```
 
 After this succeeds, you can visit your Kodo directory `kodo://<KODO_BUCKET>/<KODO_DIRECTORY>` to verify the files
-and directories created by Alluxio exist. For this test, you should see files named like
+and directories mounted by Alluxio exist. For this test, you should see files named like
 `KODO_BUCKET/KODO_DIRECTORY/default_tests_files/BasicFile_CACHE_PROMOTE_MUST_CACHE`.
 
 To stop Alluxio, you can run:

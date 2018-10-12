@@ -66,7 +66,7 @@ $ ./bin/alluxio fs mount --option fs.kodo.accesskey=<KODO_ACCESS_KEY> \
   --option fs.kodo.secretkey=<KODO_SECRET_KEY> \
   --option fs.kodo.downloadhost=<KODO_DOWNLOAD_HOST> \
   --option fs.kodo.endpoint=<KODO_ENDPOINT> \
-  /kodo /kodo://<KODO_BUCKET>/<KODO_DIRECTORY>/
+  /kodo kodo://<KODO_BUCKET>/<KODO_DIRECTORY>/
 ```
 
 ## 使用KODO在本地运行Alluxio
