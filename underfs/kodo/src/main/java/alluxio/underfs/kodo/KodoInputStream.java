@@ -37,10 +37,6 @@ public class KodoInputStream extends MultiRangeObjectInputStream {
    */
   private final long mContentLength;
 
-  KodoInputStream(String bucketname, String key, KodoClient kodoClient) throws Exception {
-    this(key, kodoClient, 0L);
-  }
-
   KodoInputStream(String key, KodoClient kodoClient, long position) throws Exception {
     mKey = key;
     mKodoclent = kodoClient;
@@ -59,7 +55,7 @@ public class KodoInputStream extends MultiRangeObjectInputStream {
    */
   @Override
   protected InputStream createStream(long startPos, long endPos) throws IOException {
-    return mKodoclent.getObject(mKey, startPos, endPos);
+    return mKodoclent.getObject(mKey, startPos, endPos, mContentLength);
   }
 }
 

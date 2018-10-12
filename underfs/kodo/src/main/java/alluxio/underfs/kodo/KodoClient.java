@@ -92,7 +92,7 @@ public class KodoClient {
    * @return  Qiniu FileInfo
    * @throws QiniuException
    */
-  public FileInfo getFileInfo(String key) throws QiniuException {
+  public FileInfo getFileInfo(String key)throws QiniuException {
     return mBucketManager.stat(mBucketName, key);
   }
 
@@ -105,10 +105,11 @@ public class KodoClient {
    * @param startPos  start index for object
    * @param endPos  end index for object
    * @return inputstream
+   * @param contentLength  object file size
    * @throws IOException
    */
-  public InputStream getObject(String key, long startPos, long endPos) throws IOException {
-
+  public InputStream getObject(String key, long startPos, long endPos, long contentLength)
+      throws IOException {
     String baseUrl = String.format("http://%s/%s", mDownloadHost, key);
     String privateUrl = mAuth.privateDownloadUrl(baseUrl);
     URL url = new URL(privateUrl);
@@ -116,7 +117,8 @@ public class KodoClient {
     try {
       Request request = new Request.Builder().url(objectUrl)
           .addHeader("Range",
-              "bytes=" + String.valueOf(startPos) + "-" + String.valueOf(endPos - 1))
+              "bytes=" + String.valueOf(startPos) + "-"
+                 + String.valueOf(endPos < contentLength ? endPos - 1 : contentLength - 1))
           .addHeader("Host", mDownloadHost).get().build();
       Response response = mOkHttpClient.newCall(request).execute();
       if (response.code() != 200 && response.code() != 206) {
