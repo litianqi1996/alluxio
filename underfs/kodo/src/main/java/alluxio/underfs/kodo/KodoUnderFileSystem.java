@@ -66,13 +66,13 @@ public class KodoUnderFileSystem extends ObjectUnderFileSystem {
       UnderFileSystemConfiguration conf) {
     String bucketName = UnderFileSystemUtils.getBucketName(uri);
     Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_ACCESS_KEY),
-        "Property %s is required to connect to Koko", PropertyKey.KODO_ACCESS_KEY);
+        "Property %s is required to connect to Kodo", PropertyKey.KODO_ACCESS_KEY);
     Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_SECRET_KEY),
-        "Property %s is required to connect to kodo", PropertyKey.KODO_SECRET_KEY);
+        "Property %s is required to connect to Kodo", PropertyKey.KODO_SECRET_KEY);
     Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_DOWNLOAD_HOST),
-        "Property %s is required to connect to kodo", PropertyKey.KODO_DOWNLOAD_HOST);
+        "Property %s is required to connect to Kodo", PropertyKey.KODO_DOWNLOAD_HOST);
     Preconditions.checkArgument(conf.isSet(PropertyKey.KODO_ENDPOINT),
-        "Property %s is required to connect to kodo", PropertyKey.KODO_ENDPOINT);
+        "Property %s is required to connect to Kodo", PropertyKey.KODO_ENDPOINT);
     String accessKey = conf.get(PropertyKey.KODO_ACCESS_KEY);
     String secretKey = conf.get(PropertyKey.KODO_SECRET_KEY);
     String endPoint = conf.get(PropertyKey.KODO_ENDPOINT);

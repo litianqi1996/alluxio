@@ -1001,26 +1001,26 @@ public final class PropertyKey implements Comparable<PropertyKey> {
           .build();
   public static final PropertyKey KODO_ACCESS_KEY =
       new Builder(Name.KODO_ACCESS_KEY)
-          .setDescription("The access key of KODO bucket.")
+          .setDescription("The access key of Kodo bucket.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
           .setScope(Scope.SERVER)
           .build();
   public static final PropertyKey KODO_SECRET_KEY =
       new Builder(Name.KODO_SECRET_KEY)
-          .setDescription("The secret key of KODO bucket.")
+          .setDescription("The secret key of Kodo bucket.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
           .setScope(Scope.SERVER)
           .setDisplayType(DisplayType.CREDENTIALS)
           .build();
   public static final PropertyKey KODO_DOWNLOAD_HOST =
       new Builder(Name.KODO_DOWNLOAD_HOST)
-          .setDescription("The Download domain of KODO bucket.")
+          .setDescription("The Download domain of Kodo bucket.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
           .setScope(Scope.SERVER)
           .build();
   public static final PropertyKey KODO_ENDPOINT =
       new Builder(Name.KODO_ENDPOINT)
-          .setDescription("The  endpoint of KODO bucket.")
+          .setDescription("The  endpoint of Kodo bucket.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
           .setScope(Scope.SERVER)
           .build();
