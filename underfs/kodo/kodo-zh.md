@@ -9,15 +9,14 @@ priority: 4
 * 内容列表
 {:toc}
 
-该指南介绍如何配置 Alluxio 以使用[Qiniu Kodo](https://www.qiniu.com/products/kodo)作为底层文件系统。七牛云对象存储 Kodo 是七牛云提供的高可靠、强安全、低成本、可扩展的存储服务。
+该指南介绍如何配置 Alluxio 以使用[Qiniu Kodo](https://www.qiniu.com/products/kodo)作为底层文件系统。七牛云对象存储( Kodo )是七牛云提供的高可靠、强安全、低成本、可扩展的存储服务。
 
 ## 初始步骤
 
-要在许多机器上运行 Alluxio 集群，需要在这些机器上部署二进制包。你可以自己[编译Alluxio](Building-Alluxio-From-Source.html)，或者[下载二进制包](Running-Alluxio-Locally.html)
+要在多台机器上运行 Alluxio 集群，需要在这些机器上部署二进制包。你可以自己[由Alluxio源码编译二进制包](Building-Alluxio-From-Source.html)，或者[直接下载预编译过的二进制包](Running-Alluxio-Locally.html)
 
 另外，为了在 Kodo 上使用 Alluxio，需要创建一个 bucket（或者使用一个已有的 bucket ）。在该指南中，Kodo bucket 的名称为KODO_BUCKET，在该 bucket 里的目录名称为 KODO_DIRECTORY
 。要使用七牛对象存储服务，需要提供一个可供识别指定 bucket 的域名，本向导中为KODO_DOWNLOAD_HOST。
-除此之外，还需提供一个 Kodo 端点域名，该端点指定了你的 bucket 所在存储区域的访问域名，本向导中的端点域名称为 KODO_ENDPOINT。
 
 ## 安装Kodo
 

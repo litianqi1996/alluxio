@@ -21,8 +21,7 @@ machines.You can either
 or [download the precompiled binaries directly](Running-Alluxio-Locally.html).
 
 In preparation for using Kodo with alluxio, create a bucket or use an existing bucket. You should also note the directory you want to use is existed in that bucket. For the purposes of this guide, the Kodo bucket
-name is called `KODO_BUCKET`, and the directory in that bucket is called `KODO_DIRECTORY`. To use the Qiniu object storage service, we need to provide a domain to identify the specified bucket, which name is called `KODO_DOWNLOAD_HOST` .Also, in order to use Qiniu Kodo Service, you should provide an Kodo endpoint to specify which range your bucket is on. The endpoint here is called `KODO_ENDPOINT`.
-
+name is called `KODO_BUCKET`, and the directory in that bucket is called `KODO_DIRECTORY`. To use the Qiniu object storage service, we need to provide a domain to identify the specified bucket, which name is called `KODO_DOWNLOAD_HOST` .
 ## Mounting Kodo
 
 Alluxio unifies access to different storage systems through the
