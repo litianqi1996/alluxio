@@ -15,8 +15,8 @@ priority: 4
 
 要在多台机器上运行 Alluxio 集群，需要在这些机器上部署二进制包。你可以自己[由Alluxio源码编译二进制包](Building-Alluxio-From-Source.html)，或者[直接下载预编译过的二进制包](Running-Alluxio-Locally.html)
 
-另外，为了在 Kodo 上使用 Alluxio，需要创建一个 bucket（或者使用一个已有的 bucket ）。在该指南中，Kodo bucket 的名称为KODO_BUCKET，在该 bucket 里的目录名称为 KODO_DIRECTORY
-。要使用七牛对象存储服务，需要提供一个可供识别指定 bucket 的域名，本向导中为KODO_DOWNLOAD_HOST。
+为了在 Kodo 上使用 Alluxio，需要创建一个 bucket（或者使用一个已有的 bucket ）。在该指南中，Kodo bucket 的名称为KODO_BUCKET，在该 bucket 里的目录名称为 KODO_DIRECTORY。
+要使用七牛对象存储服务，需要提供一个可供识别指定 bucket 的域名，本向导中为KODO_DOWNLOAD_HOST。
 
 ## 安装Kodo
 
@@ -29,6 +29,7 @@ Alluxio通过[统一命名空间](Unified-and-Transparent-Namespace.html)统一�
 ```
 alluxio.underfs.address=kodo://<KODO_BUCKET>/KODO_DIRECTORY/
 ```
+七牛不支持直接在管理控制台进行文件夹的管理，但是跟其他云厂商相同，我们默认使用`/`来对文件进行区隔。若配置 KODO_DIRECTORY 后，会在 Kodo 生成 以 KODO_DIRECTORY/ 为前缀的文件。
 
 接着，需要一些配置访问Kodo，在`conf/alluxio-site.properties`中添加
 
@@ -43,9 +44,9 @@ fs.kodo.endpoint=<KODO_ENDPOINT>
 
 `fs.kodo.downloadhost` 可以在[七牛云对象存储管理平台](https://portal.qiniu.com/bucket) 中的空间概览中获取[访问域名](https://mars-assets.qnssl.com/alluxio_host.png)
 
-`fs.kodo.endpoint` 是七牛云存储源站的端点域名配置 可以根据存储空间所在存储区域进行配置
+`fs.kodo.endpoint` 是七牛云存储源站的端点域名配置,可以根据存储空间所在存储区域进行配置
 
-Kodo 存储空间和对应端点域名可以参考
+Kodo 存储空间和对应端点域名可以参考:
 
 | 存储区域 | 区域简称 | EndPoint |
 | ------- | -------- | --------- |
