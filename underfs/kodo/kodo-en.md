@@ -11,36 +11,32 @@ priority: 4
 
 This guide describes how to configure Alluxio with
 [Qiniu Kodo](https://www.qiniu.com/products/kodo) as the under storage system. Qiniu Object Storage
-Service (Kodo) is a massive, secure and highly reliable cloud storage service provided by Qiniu.
+Service (Kodo) is a massive, secure and highly reliable cloud storage service.
 
 ## Initial Setup
 
 To run an Alluxio cluster on a set of machines, you must deploy Alluxio binaries to each of these
-machines.You can either
+machines.You can
 [compile the binaries from Alluxio source code](Building-Alluxio-From-Source.html),
 or [download the precompiled binaries directly](Running-Alluxio-Locally.html).
 
-In preparation for using Kodo with alluxio, create a bucket or use an existing bucket. You should also note the directory you want to use is existed in that bucket. For the purposes of this guide, the Kodo bucket
-name is called `KODO_BUCKET`, and the directory in that bucket is called `KODO_DIRECTORY`. To use the Qiniu object storage service, we need to provide a domain to identify the specified bucket, which name is called `KODO_DOWNLOAD_HOST` .
+A Qiniu Kodo bucket is necessary before using Kodo with alluxio. In this guide, the Qiniu Kodo bucket
+is called `KODO_BUCKET`, and the directory in the bucket is called `KODO_DIRECTORY`. In addition, you should provide a domain to identify the specified bucket, which is called `KODO_DOWNLOAD_HOST` .
 ## Mounting Kodo
 
 Alluxio unifies access to different storage systems through the
-[unified namespace](Unified-and-Transparent-Namespace.html) feature. An Kodo location can be
-either mounted at the root of the Alluxio namespace or at a nested directory.
+[unified namespace](Unified-and-Transparent-Namespace.html) feature. The root of Alluxio namespace or its subdirectories are all available for the mount point of Kodo.
 
 ### Root Mount
 
-If you want to use Qiniu Kodo as its under storage system in Alluxio. The first modification is to
-specify an existing Kodo bucket and directory as the under storage system by modifying
-`conf/alluxio-site.properties` to include:
+If you want to use Qiniu Kodo as its under storage system in Alluxio, `conf/alluxio-site.properties` must be modified. In the beginning, an existing Kodo bucket and its directory should be specified for storage by the following code:
 
 ```
 alluxio.underfs.address=kodo://<KODO_BUCKET>/<KODO_DIRECTORY>/
 ```
 
-Next you need to specify following settings to access your bucket.
+Next ,some settings must be added to `conf/alluxio-site.properties`.
 
- In `conf/alluxio-site.properties`, add:
 
 ```
 
@@ -54,9 +50,9 @@ fs.kodo.endpoint=<KODO_ENDPOINT>
 
 ```
 
-First ,you can get your `AccessKey/SecretKey` in [Qiniu Console - AccessKeys](https://portal.qiniu.com/user/key)
+`AccessKey/SecretKey` can be found in [Qiniu Console - Key Management](https://portal.qiniu.com/user/key)
 
-`fs.kodo.downloadhost` can be found in [Qiniu Kodo](https://portal.qiniu.com/bucket) 
+`fs.kodo.downloadhost` can be found in [Qiniu Console - Kodo](https://portal.qiniu.com/bucket) 
 according to this [order](https://mars-assets.qnssl.com/alluxio_host.png)
 
 `fs.kodo.endpoint` is the endpoint of this bucket, which can be found in the Bucket in this table
@@ -69,8 +65,6 @@ according to this [order](https://mars-assets.qnssl.com/alluxio_host.png)
 |North America| na0| iovip-na0.qbox.me | 
 |Southeast Asia| as0| iovip-as0.qbox.me |
 
-After these changes, Alluxio should be configured to work with Kodo as its under storage system,
-and you can try to run alluxio locally with Kodo.
 
 ### Nested Mount
 An Kodo location can be mounted at a nested directory in the Alluxio namespace to have unified
